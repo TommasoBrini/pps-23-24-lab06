@@ -53,10 +53,16 @@ enum List[A]:
 
   def partition(predicate: A => Boolean): (List[A], List[A]) = (filter(predicate), filter(!predicate(_)))
 
-  def span(predicate: A => Boolean): (List[A], List[A]) = ???
+  def span(predicate: A => Boolean): (List[A], List[A]) = 
+    foldLeft((Nil(),Nil()))((a, el) => (a, el) match
+      case ((l1, l2), e) if predicate(e) && (l2.length() == 0) => (l1.append(List.apply(e)), l2)
+      case ((l1, l2), e) => (l1, l2.append(List.apply(e))))
 
-  def takeRight(n: Int): List[A] = ???
-  def collect(predicate: PartialFunction[A, A]): List[A] = ???
+  def takeRight(n: Int): List[A] =
+    foldRight(Nil())((el, list) => if list.length() < n then el :: list else list)
+  def collect(predicate: PartialFunction[A, A]): List[A] =
+    filter(e => predicate.isDefinedAt(e)).map(e => predicate(e))
+
 // Factories
 object List:
 
@@ -76,11 +82,9 @@ object Test extends App:
   println(reference.length())
   println(reference.zipWithIndex) // List((1, 0), (2, 1), (3, 2), (4, 3))
   println(reference.partition(_ % 2 == 0)) // (List(2, 4), List(1, 3))
-  /*
   println(reference.span(_ % 2 != 0)) // (List(1), List(2, 3, 4))
   println(reference.span(_ < 3)) // (List(1, 2), List(3, 4))
   println(reference.reduce(_ + _)) // 10
   println(List(10).reduce(_ + _)) // 10
   println(reference.takeRight(3)) // List(2, 3, 4)
   println(reference.collect { case x if x % 2 == 0 => x + 1 }) // List(3, 5)
-  */
