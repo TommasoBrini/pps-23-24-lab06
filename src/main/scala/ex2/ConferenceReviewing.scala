@@ -1,10 +1,13 @@
 package ex2
 
+import ex2.Question.{RELEVANCE, SIGNIFICANCE}
+
 enum Question:
-  case RELEVANCE
-  case SIGNIFICANCE
   case CONFIDENCE
   case FINAL
+  case RELEVANCE
+  case SIGNIFICANCE
+
 
 trait ConferenceReviewing:
   def loadReview(article: Int, scores: Map[Question, Int]): Unit
@@ -19,9 +22,22 @@ object ConferenceReviewing:
   def apply(): ConferenceReviewing = ConferenceReviewingImpl()
 
   private class ConferenceReviewingImpl() extends ConferenceReviewing:
-    override def loadReview(article: Int, scores: Map[Question, Int]): Unit = ???
+    import Question.*
+    private case class Review(relevance: Int, significance: Int, confidence: Int, fin: Int):
+      def getVote(q: Question): Int = q match
+        case RELEVANCE => relevance
+        case SIGNIFICANCE => significance
+        case CONFIDENCE => confidence
+        case FINAL => fin
 
-    override def loadReview(article: Int, relevance: Int, significance: Int, confidence: Int, fin: Int): Unit = ???
+    private var reviews: List[(Int, Review)] = List()
+
+    override def loadReview(article: Int, scores: Map[Question, Int]): Unit =
+      loadReview(article, scores.getOrElse(RELEVANCE, 0), scores.getOrElse(SIGNIFICANCE, 0), scores.getOrElse(CONFIDENCE, 0), scores.getOrElse(FINAL, 0))
+
+    override def loadReview(article: Int, relevance: Int, significance: Int, confidence: Int, fin: Int): Unit =
+      reviews = reviews.+:(article, Review(relevance, significance, confidence, fin))
+
 
     override def orderedScores(article: Int, question: Question): List[Int] = ???
 

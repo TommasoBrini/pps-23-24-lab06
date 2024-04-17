@@ -1,10 +1,12 @@
 package ex2
 import org.junit.*
 import Assert.*
+import org.junit.jupiter.api.BeforeEach
 
 class TestConferenceReviewing:
 
   private var cr = ConferenceReviewing()
+
   private def init(): Unit =
     cr.loadReview(1, 8, 8, 6, 8)
     cr.loadReview(1, 9, 9, 6, 9)
