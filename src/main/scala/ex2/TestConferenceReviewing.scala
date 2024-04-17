@@ -1,11 +1,10 @@
 package ex2
-
-import java.util.EnumMap
+import org.junit.*
+import Assert.*
 
 class TestConferenceReviewing:
 
-  private var cl = ConferenceReviewing()
-
+  private var cr = ConferenceReviewing()
   private def init(): Unit =
     cr.loadReview(1, 8, 8, 6, 8)
     cr.loadReview(1, 9, 9, 6, 9)
@@ -22,7 +21,7 @@ class TestConferenceReviewing:
 
   @Test def testOrderedScores: Unit =
     init()
-    assertEquals(cd.orderedScores(2, Question.RELEVANCE), List.apply(4,9))
-    assertEquals(cd.orderedScores(4, Question.CONFIDENCE), List.apply(6, 7, 8))
-    assertEquals(cd.orderedScores(5, Question.FINAL), List.apply(10, 10))
+    assertEquals(cr.orderedScores(2, Question.RELEVANCE), List.apply(4,9))
+    assertEquals(cr.orderedScores(4, Question.CONFIDENCE), List.apply(6, 7, 8))
+    assertEquals(cr.orderedScores(5, Question.FINAL), List.apply(10, 10))
 
