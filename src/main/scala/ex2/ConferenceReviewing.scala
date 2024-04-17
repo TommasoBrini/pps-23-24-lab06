@@ -8,7 +8,6 @@ enum Question:
   case RELEVANCE
   case SIGNIFICANCE
 
-
 trait ConferenceReviewing:
   def loadReview(article: Int, scores: Map[Question, Int]): Unit
   def loadReview(article: Int, relevance: Int, significance: Int, confidence: Int, fin: Int): Unit
@@ -24,7 +23,7 @@ object ConferenceReviewing:
   private class ConferenceReviewingImpl() extends ConferenceReviewing:
     import Question.*
     private case class Review(relevance: Int, significance: Int, confidence: Int, fin: Int):
-      def getVote(q: Question): Int = q match
+      def vote(q: Question): Int = q match
         case RELEVANCE => relevance
         case SIGNIFICANCE => significance
         case CONFIDENCE => confidence
@@ -39,9 +38,11 @@ object ConferenceReviewing:
       reviews = reviews.+:(article, Review(relevance, significance, confidence, fin))
 
 
-    override def orderedScores(article: Int, question: Question): List[Int] = ???
+    override def orderedScores(article: Int, question: Question): List[Int] =
+      reviews.filter((id, _) => id == article).map((_, rew) => rew.vote(question)).toList.sorted
 
-    override def averageFinalScore(article: Int): Double = ???
+    override def averageFinalScore(article: Int): Double =
+      reviews.collect { case (id, rew) if id == article => rew.vote(FINAL)}.sum.toDouble / reviews.count((i, _) => i == article).toDouble
 
     override def acceptedArticles(): Set[Integer] = ???
 

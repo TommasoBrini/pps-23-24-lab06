@@ -21,9 +21,17 @@ class TestConferenceReviewing:
     cr.loadReview(5, 6, 6, 6, 10)
     cr.loadReview(5, 7, 7, 7, 10)
 
-  @Test def testOrderedScores: Unit =
+  @Test def testOrderedScores(): Unit =
     init()
     assertEquals(cr.orderedScores(2, Question.RELEVANCE), List.apply(4,9))
     assertEquals(cr.orderedScores(4, Question.CONFIDENCE), List.apply(6, 7, 8))
     assertEquals(cr.orderedScores(5, Question.FINAL), List.apply(10, 10))
+
+  @Test def testAverageFinalScore(): Unit =
+    init()
+    assertEquals(cr.averageFinalScore(1), 8.5, 0.01)
+    assertEquals(cr.averageFinalScore(2), 7.5, 0.01)
+    assertEquals(cr.averageFinalScore(3), 3.5, 0.01)
+    assertEquals(cr.averageFinalScore(4), 7.0, 0.01)
+    assertEquals(cr.averageFinalScore(5), 10.0, 0.01)
 
