@@ -39,7 +39,15 @@ class TestConferenceReviewing:
     init()
     assertEquals(cr.acceptedArticles(), Set.apply(1,2,4))
 
-  @Test
-  def testSortedAcceptedArticles(): Unit =
+  @Test def testSortedAcceptedArticles(): Unit =
     init()
     assertEquals(cr.sortedAcceptedArticles(), List((4, 7.0), (2, 7.5), (1, 8.5)));
+
+  @Test def optionalTestAverageWeightedFinalScore(): Unit =
+    init()
+    assertEquals(cr.averageWeightedFinalScoreMap()(1), (4.8+5.4)/2, 0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(2), (9.0 + 6.0)/2,0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(3), (0.9 + 1.6)/2,0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(4), (3.6 + 5.6 + 5.6)/3,0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(5), ((6.0 + 7.0)/2), 0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap().size, 5)

@@ -37,15 +37,14 @@ object ConferenceReviewing:
     override def loadReview(article: Int, relevance: Int, significance: Int, confidence: Int, fin: Int): Unit =
       reviews = reviews.+:(article, Review(relevance, significance, confidence, fin))
 
-
     override def orderedScores(article: Int, question: Question): List[Int] =
-      reviews.filter((id, _) => id == article).map((_, rew) => rew.vote(question)).toList.sorted
+      reviews.filter((id, _) => id == article).map((_, rew) => rew.vote(question)).sorted
 
     override def averageFinalScore(article: Int): Double =
-      reviews.collect { case (id, rew) if id == article => rew.vote(FINAL)}.sum.toDouble / reviews.count((i, _) => i == article).toDouble
+      reviews.collect { case (id, rew) if id == article => rew.fin}.sum.toDouble / reviews.count((i, _) => i == article).toDouble
 
     private def atLeastOneRelevance(article: Int): Boolean =
-      reviews.collect{ case (id, rew) if id == article => rew.vote(RELEVANCE)}.exists(_ >=8)
+      reviews.collect{ case (id, rew) if id == article => rew.relevance}.exists(_ >=8)
 
     override def acceptedArticles(): Set[Int] =
       reviews.map((i, _) => i).filter(i => averageFinalScore(i) > 5).filter(i => atLeastOneRelevance(i)).toSet
@@ -53,4 +52,9 @@ object ConferenceReviewing:
     override def sortedAcceptedArticles(): List[(Int, Double)] =
       acceptedArticles().toList.map(i => (i, averageFinalScore(i))).sortBy(_._2)
 
-    override def averageWeightedFinalScoreMap(): Map[Int, Double] = ???
+    override def averageWeightedFinalScoreMap(): Map[Int, Double] =
+      reviews.map((i,_) => i).toSet.map(i => (i, averageWeightFinalScore(i))).toMap
+
+    private def averageWeightFinalScore(article: Int): Double =
+      reviews.collect{ case (id, rew) if id == article => rew.confidence * rew.fin / 10d}.sum / reviews.count((i, _) => i == article).toDouble
+
