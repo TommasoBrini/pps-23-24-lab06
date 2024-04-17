@@ -50,6 +50,7 @@ object ConferenceReviewing:
     override def acceptedArticles(): Set[Int] =
       reviews.map((i, _) => i).filter(i => averageFinalScore(i) > 5).filter(i => atLeastOneRelevance(i)).toSet
 
-    override def sortedAcceptedArticles(): List[(Int, Double)] = ???
+    override def sortedAcceptedArticles(): List[(Int, Double)] =
+      acceptedArticles().toList.map(i => (i, averageFinalScore(i))).sortBy(_._2)
 
     override def averageWeightedFinalScoreMap(): Map[Int, Double] = ???

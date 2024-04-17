@@ -39,3 +39,7 @@ class TestConferenceReviewing:
     init()
     assertEquals(cr.acceptedArticles(), Set.apply(1,2,4))
 
+  @Test
+  def testSortedAcceptedArticles(): Unit =
+    init()
+    assertEquals(cr.sortedAcceptedArticles(), List((4, 7.0), (2, 7.5), (1, 8.5)));
