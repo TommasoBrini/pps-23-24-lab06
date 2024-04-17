@@ -35,3 +35,7 @@ class TestConferenceReviewing:
     assertEquals(cr.averageFinalScore(4), 7.0, 0.01)
     assertEquals(cr.averageFinalScore(5), 10.0, 0.01)
 
+  @Test def testAcceptedArticles(): Unit =
+    init()
+    assertEquals(cr.acceptedArticles(), Set.apply(1,2,4))
+

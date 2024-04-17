@@ -13,7 +13,7 @@ trait ConferenceReviewing:
   def loadReview(article: Int, relevance: Int, significance: Int, confidence: Int, fin: Int): Unit
   def orderedScores(article: Int, question: Question): List[Int]
   def averageFinalScore(article: Int): Double
-  def acceptedArticles(): Set[Integer]
+  def acceptedArticles(): Set[Int]
   def sortedAcceptedArticles(): List[(Int, Double)]
   def averageWeightedFinalScoreMap(): Map[Int, Double]
 
@@ -44,7 +44,11 @@ object ConferenceReviewing:
     override def averageFinalScore(article: Int): Double =
       reviews.collect { case (id, rew) if id == article => rew.vote(FINAL)}.sum.toDouble / reviews.count((i, _) => i == article).toDouble
 
-    override def acceptedArticles(): Set[Integer] = ???
+    private def atLeastOneRelevance(article: Int): Boolean =
+      reviews.collect{ case (id, rew) if id == article => rew.vote(RELEVANCE)}.exists(_ >=8)
+
+    override def acceptedArticles(): Set[Int] =
+      reviews.map((i, _) => i).filter(i => averageFinalScore(i) > 5).filter(i => atLeastOneRelevance(i)).toSet
 
     override def sortedAcceptedArticles(): List[(Int, Double)] = ???
 
