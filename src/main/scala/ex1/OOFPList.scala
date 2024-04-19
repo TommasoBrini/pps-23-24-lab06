@@ -36,30 +36,37 @@ enum List[A]:
   def flatMap[B](f: A => List[B]): List[B] =
     foldRight(Nil())(f(_) append _)
 
-  def filter(predicate: A => Boolean): List[A] = flatMap(a => if predicate(a) then a :: Nil() else Nil())
+  def filter(predicate: A => Boolean): List[A] =
+    flatMap(a => if predicate(a) then a :: Nil() else Nil())
 
-  def map[B](fun: A => B): List[B] = flatMap(a => fun(a) :: Nil())
+  def map[B](fun: A => B): List[B] =
+    flatMap(a => fun(a) :: Nil())
 
   def reduce(op: (A, A) => A): A = this match
     case Nil() => throw new IllegalStateException()
     case h :: t => t.foldLeft(h)(op)
 
   // Exercise: implement the following methods
-  def zipWithValue[B](value: B): List[(A, B)] = map(x => (x,value))
+  def zipWithValue[B](value: B): List[(A, B)] =
+    map(x => (x,value))
 
-  def length(): Int = foldLeft(0)((a, b) => a + 1)
+  def length(): Int =
+    foldLeft(0)((a, b) => a + 1)
 
-  def zipWithIndex: List[(A, Int)] = foldRight(Nil())((a, b) => b.::(a, this.length() - b.length() - 1))
+  def zipWithIndex: List[(A, Int)] =
+    foldRight(Nil())((a, b) => b.::(a, this.length() - b.length() - 1))
 
-  def partition(predicate: A => Boolean): (List[A], List[A]) = (filter(predicate), filter(!predicate(_)))
+  def partition(predicate: A => Boolean): (List[A], List[A]) =
+    (filter(predicate), filter(!predicate(_)))
 
   def span(predicate: A => Boolean): (List[A], List[A]) = 
-    foldLeft((Nil(),Nil()))((a, el) => (a, el) match
+    foldLeft((Nil(),Nil()))((lists, el) => (lists, el) match
       case ((l1, l2), e) if predicate(e) && (l2.length() == 0) => (l1.append(List.apply(e)), l2)
       case ((l1, l2), e) => (l1, l2.append(List.apply(e))))
 
   def takeRight(n: Int): List[A] =
     foldRight(Nil())((el, list) => if list.length() < n then el :: list else list)
+
   def collect(predicate: PartialFunction[A, A]): List[A] =
     filter(e => predicate.isDefinedAt(e)).map(e => predicate(e))
 
@@ -70,7 +77,6 @@ object List:
     var list: List[A] = Nil()
     for e <- elems.reverse do list = e :: list
     list
-
   def of[A](elem: A, n: Int): List[A] =
     if n == 0 then Nil() else elem :: of(elem, n - 1)
 
