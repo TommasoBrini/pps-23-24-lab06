@@ -40,10 +40,14 @@ object ConferenceReviewing:
       reviews.filter((id, _) => id == article).map((_, rew) => rew.vote(question)).sorted
 
     override def averageFinalScore(article: Int): Double =
-      reviews.collect { case (id, rew) if id == article => rew.fin}.sum.toDouble / reviews.count((i, _) => i == article).toDouble
+      reviews.collect:
+        case (id, rew) if id == article => rew.fin
+      .sum.toDouble / reviews.count((i, _) => i == article).toDouble
 
     private def atLeastOneRelevance(article: Int): Boolean =
-      reviews.collect{ case (id, rew) if id == article => rew.relevance}.exists(_ >=8)
+      reviews.collect:
+        case (id, rew) if id == article => rew.relevance
+      .exists(_ >= 8)
 
     override def acceptedArticles(): Set[Int] =
       reviews.map((i, _) => i).filter(i => averageFinalScore(i) > 5).filter(i => atLeastOneRelevance(i)).toSet
@@ -55,5 +59,7 @@ object ConferenceReviewing:
       reviews.map((i,_) => i).toSet.map(i => (i, averageWeightedFinalScore(i))).toMap
 
     private def averageWeightedFinalScore(article: Int): Double =
-      reviews.collect{ case (id, rew) if id == article => rew.confidence * rew.fin / 10d}.sum / reviews.count((i, _) => i == article).toDouble
+      reviews.collect:
+        case (id, rew) if id == article => rew.confidence * rew.fin / 10d
+      .sum / reviews.count((i, _) => i == article).toDouble
 
