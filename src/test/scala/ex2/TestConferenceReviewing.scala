@@ -1,6 +1,6 @@
 package ex2
 import org.junit.*
-import Assert.*
+import org.junit.Assert.*
 import org.junit.jupiter.api.BeforeEach
 
 class TestConferenceReviewing:
