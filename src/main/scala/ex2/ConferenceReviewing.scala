@@ -1,6 +1,6 @@
 package ex2
 
-import ex2.Question.{RELEVANCE, SIGNIFICANCE}
+import Question.*
 
 enum Question:
   case CONFIDENCE
@@ -21,7 +21,6 @@ object ConferenceReviewing:
   def apply(): ConferenceReviewing = ConferenceReviewingImpl()
 
   private class ConferenceReviewingImpl() extends ConferenceReviewing:
-    import Question.*
     private case class Review(relevance: Int, significance: Int, confidence: Int, fin: Int):
       def vote(q: Question): Int = q match
         case RELEVANCE => relevance
@@ -53,8 +52,8 @@ object ConferenceReviewing:
       acceptedArticles().toList.map(i => (i, averageFinalScore(i))).sortBy(_._2)
 
     override def averageWeightedFinalScoreMap(): Map[Int, Double] =
-      reviews.map((i,_) => i).toSet.map(i => (i, averageWeightFinalScore(i))).toMap
+      reviews.map((i,_) => i).toSet.map(i => (i, averageWeightedFinalScore(i))).toMap
 
-    private def averageWeightFinalScore(article: Int): Double =
+    private def averageWeightedFinalScore(article: Int): Double =
       reviews.collect{ case (id, rew) if id == article => rew.confidence * rew.fin / 10d}.sum / reviews.count((i, _) => i == article).toDouble
 
